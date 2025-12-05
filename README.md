@@ -1,1 +1,1 @@
-"# local-getsetkiddies" 
+# local-getsetkiddies
