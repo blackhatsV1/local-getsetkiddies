@@ -1,0 +1,204 @@
+<%- include('../partials/head') %>
+<body>  
+<style>
+  
+  .content {
+    margin-left: 200px; 
+    padding: 30px 40px;
+    background-color: #ffffff;
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+
+  .content p {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  h3 {
+    color: #692e69;
+    margin-bottom: 20px;
+  }
+    
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+
+  table thead {
+    background-color: #692e69;
+    color: white;
+  }
+
+  table thead th {
+    padding: 12px 10px;
+    text-align: left;
+  }
+
+  table tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .location-cell em {
+    color: #888;
+  }
+
+  
+  button.setGeoBtn {
+    background-color: #692e69;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+
+  button.setGeoBtn:hover {
+    background-color: #8b3c8b;
+  }
+
+  
+  @media (max-width: 900px) {
+    .content {
+      margin-left: 0;
+      border-radius: 0;
+      padding: 20px;
+    }
+
+    table thead, table tbody, table th, table td, table tr {
+      display: block;
+    }
+
+    table thead tr {
+      display: none;
+    }
+
+    table tbody tr {
+      margin-bottom: 15px;
+      border-bottom: 2px solid #ddd;
+      padding: 10px;
+    }
+
+    table tbody td {
+      padding: 6px 0;
+      text-align: right;
+      position: relative;
+    }
+
+    table tbody td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      width: 50%;
+      padding-left: 10px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    button.setGeoBtn {
+      width: 100%;
+      margin-top: 5px;
+    }
+  }
+</style>
+
+  <%- include('../partials/top-nav-parents') %>
+
+  <div class="main-container">
+    <%- include('../partials/side-nav-parents') %>
+
+    <main class="content">
+      <h1 class="themed-heading">Setup Geofence</h1>
+      <% if (parent) { %>
+        <p>Logged in as: <%= parent.firstname %> <%= parent.lastname %></p>
+      <% } %>
+
+    <% if (children.length === 0) { %>
+        <p>No registered children found. Go to <a href="/register-child">Add Child</a>.</p>
+      <% } else { %>
+      <table border="1" id="childrenTable" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Last Known Location</th>
+            <th>Date & Time</th>
+            <th>Geofence Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% children.forEach(child => { %>
+            <tr 
+              data-child-id="<%= child.id %>"
+              data-lat="<%= child.latitude || '' %>"
+              data-lng="<%= child.longitude || '' %>"
+            >
+              <td><%= child.firstname %></td>
+              <td><%= child.lastname %></td>
+              <td><%= child.child_age %></td>
+              <td><%= child.child_gender %></td>
+              <td class="location-cell">
+                <% if (child.latitude && child.longitude) { %>
+                  <em>Loading address...</em>
+                <% } else { %>
+                  <em>No data</em>
+                <% } %>
+              </td>
+              <td>
+                <% if (child.date_time) { 
+                    const d = new Date(child.date_time);
+                    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+                    const weekday = days[d.getDay()];
+                %>
+                  <%= weekday %>, 
+                  <%= d.toLocaleDateString('en-PH') %>, 
+                  <%= d.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' }) %>
+                <% } else { %>
+                  <em>—</em>
+                <% } %>
+              </td>
+              <td>
+                <% if (child.geofence_id) { %>
+                  Has geofence 
+                  (<%= child.geofence_updated_at ? new Date(child.geofence_updated_at).toLocaleString('en-PH') : new Date(child.geofence_created_at).toLocaleString('en-PH') %>)
+                <% } else { %>
+                  None
+                <% } %>
+              </td>
+              <td>
+                <button class="setGeoBtn"
+                  data-child-id="<%= child.id %>"
+                  data-child-name="<%= child.firstname %>"
+                  data-lat="<%= child.latitude || '' %>"
+                  data-lng="<%= child.longitude || '' %>">
+                  Set Geofence
+                </button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+
+      </table>
+    <% } %>
+
+
+      <%- include('../partials/geofence-map') %>
+    </main>
+  </div>
+
+  <%- include('../partials/footer') %>
+  <script src="/js/geofenceSetup.js"></script>
+</body>

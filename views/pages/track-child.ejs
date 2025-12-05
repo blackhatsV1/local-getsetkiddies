@@ -1,0 +1,194 @@
+<%- include('../partials/head') %>
+<body>
+<style>
+  .content {
+    flex: 1;
+    padding: 30px 40px;
+    background-color: #f9f9f9;
+    border-radius: 0 20px 20px 0;
+    font-family: "Roboto", sans-serif;
+  }
+
+  .content h3 {
+    color: #692e69;
+    margin-bottom: 15px;
+  }
+
+  .content p {
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  
+  #childrenTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  #childrenTable th, #childrenTable td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+
+  #childrenTable thead {
+    background-color: #692e69;
+    color: white;
+    font-weight: bold;
+  }
+
+  #childrenTable tbody tr {
+    background-color: white;
+    transition: background 0.3s;
+  }
+
+  #childrenTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  #childrenTable tbody tr:hover {
+    background-color: #e0c0e0;
+  }
+
+  
+  .trackBtn {
+    background-color: #692e69;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+
+  .trackBtn:hover {
+    background-color: #8b3c8b;
+  }
+
+  
+  .setGeoBtn {
+    display: inline-block;
+    background-color: #ffb86b;
+    color: #692e69;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .setGeoBtn:hover { background-color: #ff9f3d; }
+
+  
+  .last-location {
+    font-style: italic;
+    color: #555;
+  }
+
+  
+  #mapContainer {
+    width: 100%;
+    height: 500px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    margin-top: 20px;
+  }
+
+  
+  @media (max-width: 900px) {
+    .content {
+      padding: 20px;
+      border-radius: 0;
+    }
+    #childrenTable th, #childrenTable td {
+      padding: 10px;
+    }
+    .trackBtn {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+  }
+
+  .geoStatus span {
+  font-weight: 600;
+}
+
+</style>
+
+  <%- include('../partials/top-nav-parents') %>
+
+  <div class="main-container">
+    <%- include('../partials/side-nav-parents') %>
+
+    <main class="content">
+    <h1 class="themed-heading">Track Child</h1>
+      <% if (parent) { %>
+        <p>Logged in as: <strong><%= parent.firstname %> <%= parent.lastname %></strong></p>
+      <% } %>
+
+      <p>Click <b><i>Show on Map</i></b> button to view the last recorded location and geofence location of the child. </p>
+      <h3>Registered Children</h3>
+
+      <% if (children.length === 0) { %>
+        <p>No registered children found. Go to <a href="/register-child">Add Child</a>.</p>
+      <% } else { %>
+        <table border="1" id="childrenTable" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Firstname</th>
+              <th>Lastname</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Last Known Location</th>
+              <th>Geofence Status</th> 
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% children.forEach(child => { %>
+              <tr data-child-id="<%= child.id %>">
+                <td><%= child.firstname %></td>
+                <td><%= child.lastname %></td>
+                <td><%= child.child_age %></td>
+                <td><%= child.child_gender %></td>
+                <td class="last-location">Loading...</td>
+                <td class="geoStatus" data-child-id="<%= child.id %>">Checking...</td>
+                <td>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <button class="trackBtn"
+                      data-child-id="<%= child.id %>"
+                      data-child-name="<%= child.firstname %>">
+                      Show on Map
+                    </button>
+                    <% if (!child.geofence_id) { %>
+                      <a class="setGeoBtn" href="/api/geofences/setup?child_id=<%= child.id %>"
+                         data-child-id="<%= child.id %>"
+                         data-child-name="<%= child.firstname %> <%= child.lastname %>"
+                         data-lat="<%= child.latitude || '' %>"
+                         data-lng="<%= child.longitude || '' %>">
+                        Set Geofence
+                      </a>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+
+      
+      <%- include('../partials/locationselect') %>
+
+    </main>
+  </div>
+
+  <%- include('../partials/footer') %>
+  <script src="/js/locationselect.js"></script>
+</body>

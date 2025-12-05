@@ -1,0 +1,237 @@
+<%- include('../partials/head') %>
+<body>
+
+  <main class="content">
+    
+    <div class="logo-container">
+      <div class="map-pin">
+        <div class="pin-center"></div>
+      </div>
+      <h1 class="logo-text">
+        <span class="white-text">GetSet</span> <span class="yellow-text">Kiddies</span>
+      </h1>
+    </div>
+
+    
+    <div class="login-prompt">
+      <h2 id="welcomeText">Welcome!</h2>
+      <p id="infoText">Track your child for their safety!</p>
+      <a href="/login" class="login-btn">Login</a>
+      <p class="register-text">No account? <a href="/register">Register here</a></p>
+    </div>
+
+    
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </main>
+
+  <style>
+     body {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      padding: 0 12px; 
+      background: linear-gradient(135deg, #c54478, #ff92ac);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: min(480px, 100%); 
+      max-width: 480px;
+      padding: 40px 20px;
+      box-sizing: border-box;
+      margin: 0 auto; 
+      height: auto; 
+    }
+
+    
+    .logo-container {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .map-pin {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      background-color: #692e69;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      margin: 0 auto 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .pin-center {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      width: 60px;
+      height: 60px;
+      background-color: white;
+      border-radius: 50%;
+      transform: rotate(45deg);
+    }
+
+    .logo-text {
+      font-size: 42px; 
+      font-weight: 900;
+      color: white;
+      text-align: center;
+      line-height: 1.2;
+      z-index: 3;
+    }
+
+    .white-text {
+      color: #ffffff;
+      text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.95), 0 0 12px #ffffff;
+    }
+
+    .yellow-text {
+      color: #ffff00;
+      text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.95), 0 0 10px #ffff66;
+    }
+
+
+
+    
+    .login-prompt {
+      position: relative;
+      z-index: 2;
+      background-color: white;
+      color: #692e69;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      animation: fadeIn 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    .login-prompt h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .login-prompt p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .login-btn {
+      display: inline-block;
+      background-color: #692e69;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: #8b3c8b;
+    }
+
+    .register-text {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .register-text a {
+      color: #692e69;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .register-text a:hover {
+      text-decoration: underline;
+    }
+
+    
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.2;
+      z-index: 1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .circle1 {
+      width: 150px;
+      height: 150px;
+      background-color: #ffff00;
+      top: -50px;
+      left: -50px;
+      animation-delay: 0s;
+    }
+
+    .circle2 {
+      width: 100px;
+      height: 100px;
+      background-color: #ffffff;
+      bottom: -40px;
+      right: -30px;
+      animation-delay: 2s;
+    }
+
+    .circle3 {
+      width: 120px;
+      height: 120px;
+      background-color: #8b3c8b;
+      top: 30%;
+      right: -60px;
+      animation-delay: 4s;
+    }
+
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    
+    @media (max-width: 500px) {
+      .logo-text { font-size: 28px; }
+      .map-pin { width: 100px; height: 100px; }
+      .pin-center { width: 50px; height: 50px; }
+      .login-prompt { padding: 30px 20px; }
+    }
+  </style>
+
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
+      const messages = [
+        "Welcome!",
+        "Track your child safely!",
+        "Stay updated anytime!",
+        "Ensure their safety now!"
+      ];
+      let i = 0;
+      const welcomeText = document.getElementById("welcomeText");
+      if (!welcomeText) return;
+      welcomeText.textContent = messages[0];
+      setInterval(() => {
+        welcomeText.textContent = messages[i];
+        i = (i + 1) % messages.length;
+      }, 3000);
+    });
+  </script>
+
+</body>
